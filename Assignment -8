@@ -1,0 +1,968 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/2403a54124-ux/NLP-NATURAL-LANGUAGE-PROCESS-/blob/main/Assignment%20-8\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "doc1 = \"Natural language processing enables computers to understand human language.\"\n",
+        "\n",
+        "doc2 = \"Machine learning improves system performance through experience.\"\n",
+        "\n",
+        "doc3 = \"Deep learning uses neural networks for complex tasks.\"\n",
+        "\n",
+        "doc4 = \"Text preprocessing removes noise from raw data.\""
+      ],
+      "metadata": {
+        "id": "The4d6VaFJrS"
+      },
+      "execution_count": 1,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "documents = [doc1, doc2, doc3, doc4]\n",
+        "corpus = \" \".join(documents)\n",
+        "\n",
+        "print(\"Total Documents:\", len(documents))\n",
+        "print(corpus)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nwPoIW3YFW4L",
+        "outputId": "7105e6ed-7410-470a-9d77-f4d4b4075c58"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Total Documents: 4\n",
+            "Natural language processing enables computers to understand human language. Machine learning improves system performance through experience. Deep learning uses neural networks for complex tasks. Text preprocessing removes noise from raw data.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "FN1OgWQIFc90"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Total Documents: 4\n",
+        "Natural language processing enables computers to understand human language. Machine learning improves system performance through experience. Deep learning uses neural networks for complex tasks. Text preprocessing removes noise from raw data."
+      ],
+      "metadata": {
+        "id": "gaH3T-CxFiru"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import re\n",
+        "from collections import defaultdict, Counter\n",
+        "import numpy as np\n",
+        "import random"
+      ],
+      "metadata": {
+        "id": "kHh5zas0Fkx0"
+      },
+      "execution_count": 3,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def preprocess(text):\n",
+        "    text = text.lower()\n",
+        "    text = re.sub(r'[^a-z\\s.]', '', text)\n",
+        "\n",
+        "    sentences = text.split('.')\n",
+        "    processed = []\n",
+        "\n",
+        "    for sentence in sentences:\n",
+        "        words = sentence.strip().split()\n",
+        "        if len(words) > 0:\n",
+        "            words = [''] + words + ['']\n",
+        "            processed.append(words)\n",
+        "\n",
+        "    return processed\n",
+        "\n",
+        "sentences = preprocess(corpus)\n",
+        "\n",
+        "print(sentences)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "l58CD4C0Fr6-",
+        "outputId": "aa16524e-ca8f-4aae-cc16-679ddf6cfc89"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[['', 'natural', 'language', 'processing', 'enables', 'computers', 'to', 'understand', 'human', 'language', ''], ['', 'machine', 'learning', 'improves', 'system', 'performance', 'through', 'experience', ''], ['', 'deep', 'learning', 'uses', 'neural', 'networks', 'for', 'complex', 'tasks', ''], ['', 'text', 'preprocessing', 'removes', 'noise', 'from', 'raw', 'data', '']]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "IV4QGXN4Fw_T"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "unigram_counts = defaultdict(int)\n",
+        "total_words = 0\n",
+        "\n",
+        "for sentence in sentences:\n",
+        "    # Exclude the start/end tokens (empty strings) from word counting\n",
+        "    for word in sentence:\n",
+        "        if word:\n",
+        "            unigram_counts[word] += 1\n",
+        "            total_words += 1\n",
+        "\n",
+        "vocab_size = len(unigram_counts)\n",
+        "\n",
+        "print(\"Total unique words (vocab_size):\", vocab_size)\n",
+        "print(\"Total words in training data: \", total_words)\n",
+        "print(\"Top 10 most common unigrams:\")\n",
+        "for word, count in sorted(unigram_counts.items(), key=lambda item: item[1], reverse=True)[:10]:\n",
+        "    print(f\"  {word}: {count}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "B2qC4vDeF4m1",
+        "outputId": "3aa4963d-0e29-4d05-cf74-f2f8b263bf00"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Total unique words (vocab_size): 29\n",
+            "Total words in training data:  31\n",
+            "Top 10 most common unigrams:\n",
+            "  language: 2\n",
+            "  learning: 2\n",
+            "  natural: 1\n",
+            "  processing: 1\n",
+            "  enables: 1\n",
+            "  computers: 1\n",
+            "  to: 1\n",
+            "  understand: 1\n",
+            "  human: 1\n",
+            "  machine: 1\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "bigram_counts = defaultdict(lambda: defaultdict(int))\n",
+        "\n",
+        "for sentence in sentences:\n",
+        "    for i in range(len(sentence) - 1):\n",
+        "        current_word = sentence[i]\n",
+        "        next_word = sentence[i+1]\n",
+        "        if current_word:\n",
+        "            bigram_counts[current_word][next_word] += 1\n",
+        "\n",
+        "print(\"Sample bigram counts (e.g., for 'natural' or 'deep'):\")\n",
+        "print(\"  natural:\", dict(bigram_counts['natural']))\n",
+        "print(\"  deep:\", dict(bigram_counts['deep']))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "L0xqCH81GKwy",
+        "outputId": "ba05e143-5f47-4fd8-c261-0c7842dc9789"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Sample bigram counts (e.g., for 'natural' or 'deep'):\n",
+            "  natural: {'language': 1}\n",
+            "  deep: {'learning': 1}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "trigram_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))\n",
+        "\n",
+        "for sentence in sentences:\n",
+        "    for i in range(len(sentence) - 2):\n",
+        "        word1 = sentence[i]\n",
+        "        word2 = sentence[i+1]\n",
+        "        word3 = sentence[i+2]\n",
+        "        trigram_counts[word1][word2][word3] += 1\n",
+        "\n",
+        "print(\"Sample trigram counts (e.g., for ('', 'natural') or ('machine', 'learning')):\")\n",
+        "print(\"  ('', 'natural'):\", dict(trigram_counts['']['natural']))\n",
+        "print(\"  ('machine', 'learning'):\", dict(trigram_counts['machine']['learning']))\n",
+        "# You can check other pairs as well, for instance:\n",
+        "# print(\"  ('deep', 'learning'):\", dict(trigram_counts['deep']['learning']))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "q7rpqePEGoBw",
+        "outputId": "b40738b4-f31b-4fab-ef73-dd53cab768b6"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Sample trigram counts (e.g., for ('', 'natural') or ('machine', 'learning')):\n",
+            "  ('', 'natural'): {'language': 1}\n",
+            "  ('machine', 'learning'): {'improves': 1}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Sample trigram counts (e.g., for ('s', 'natural') or ('machine', 'learning')):\")\n",
+        "print(\"   natural:\", dict(trigram_counts['']['natural']))\n",
+        "print(\"  machine learning:\", dict(trigram_counts['machine']['learning']))\n",
+        "# You can check other pairs as well, for instance:\n",
+        "# print(\"  deep learning:\", dict(trigram_counts['deep']['learning']))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "mLJmVJDNGt_S",
+        "outputId": "3d1287a0-ac37-4385-d74a-9035cb1585cf"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Sample trigram counts (e.g., for ('s', 'natural') or ('machine', 'learning')):\n",
+            "   natural: {'language': 1}\n",
+            "  machine learning: {'improves': 1}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "split_index = int(0.8 * len(sentences))\n",
+        "train_data = sentences[:split_index]\n",
+        "test_data = sentences[split_index:]\n",
+        "\n",
+        "print(\"Train:\", train_data)\n",
+        "print(\"Test:\", test_data)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "isI4UcJqG2k1",
+        "outputId": "51005cfc-6e9d-473f-cee5-48cbd8dfa7ff"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Train: [['', 'natural', 'language', 'processing', 'enables', 'computers', 'to', 'understand', 'human', 'language', ''], ['', 'machine', 'learning', 'improves', 'system', 'performance', 'through', 'experience', ''], ['', 'deep', 'learning', 'uses', 'neural', 'networks', 'for', 'complex', 'tasks', '']]\n",
+            "Test: [['', 'text', 'preprocessing', 'removes', 'noise', 'from', 'raw', 'data', '']]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def bigram_prob(w1, w2, k=1):\n",
+        "    # Add-k smoothing\n",
+        "    if w1 not in bigram_counts or sum(bigram_counts[w1].values()) == 0:\n",
+        "        # Fallback to unigram probability if bigram not seen or its count is zero\n",
+        "        return (unigram_counts.get(w2, 0) + k) / (total_words + vocab_size * k)\n",
+        "    else:\n",
+        "        return (bigram_counts[w1].get(w2, 0) + k) / (sum(bigram_counts[w1].values()) + vocab_size * k)\n",
+        "\n",
+        "def trigram_prob(w1, w2, w3, k=1):\n",
+        "    # Add-k smoothing\n",
+        "    if w1 not in trigram_counts or w2 not in trigram_counts[w1] or sum(trigram_counts[w1][w2].values()) == 0:\n",
+        "        # Fallback to bigram probability if trigram not seen or its count is zero\n",
+        "        return bigram_prob(w2, w3, k=k) # Pass k to bigram_prob\n",
+        "    else:\n",
+        "        return (trigram_counts[w1][w2].get(w3, 0) + k) / (sum(trigram_counts[w1][w2].values()) + vocab_size * k)\n",
+        "\n",
+        "def predict_next_word_bigram(w1, top_n=1, k=1):\n",
+        "    if w1 not in bigram_counts or not bigram_counts[w1]:\n",
+        "        print(f\"No bigram data for '{w1}'. Falling back to unigram prediction.\")\n",
+        "        # Fallback to unigram if no bigram data for w1\n",
+        "        next_word_probabilities = {word: (unigram_counts.get(word, 0) + k) / (total_words + vocab_size * k) for word in unigram_counts.keys() if word != ''}\n",
+        "    else:\n",
+        "        next_word_probabilities = {}\n",
+        "        for next_word in unigram_counts.keys():\n",
+        "            if next_word == '': continue\n",
+        "            next_word_probabilities[next_word] = bigram_prob(w1, next_word, k=k) # Pass k to bigram_prob\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "def predict_next_word_trigram(w1, w2, top_n=1, k=1):\n",
+        "    if w1 not in trigram_counts or w2 not in trigram_counts[w1] or not trigram_counts[w1][w2]:\n",
+        "        print(f\"No trigram data for '({w1}, {w2})'. Falling back to bigram prediction for '{w2}'.\")\n",
+        "        return predict_next_word_bigram(w2, top_n, k=k)\n",
+        "\n",
+        "    next_word_probabilities = {}\n",
+        "\n",
+        "    for next_word in unigram_counts.keys():\n",
+        "        if next_word == '' and (w1 != '' or w2 != ''):\n",
+        "            continue\n",
+        "        next_word_probabilities[next_word] = trigram_prob(w1, w2, next_word, k=k)\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "# Example Usage:\n",
+        "print(\"Predicting next word after ('', 'natural'):\", predict_next_word_trigram('', 'natural'))\n",
+        "print(\"Predicting next word after ('machine', 'learning'):\", predict_next_word_trigram('machine', 'learning'))\n",
+        "print(\"Predicting next word after ('deep', 'learning'):\", predict_next_word_trigram('deep', 'learning'))\n",
+        "print(\"Predicting next word after ('to', 'understand'):\", predict_next_word_trigram('to', 'understand'))\n",
+        "print(\"Predicting next word after ('nonexistent', 'context'):\", predict_next_word_trigram('nonexistent', 'context'))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "beBilS9cG_I3",
+        "outputId": "4472574a-3c9f-4b2d-f651-a0e7c06a6dc5"
+      },
+      "execution_count": 23,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Predicting next word after ('', 'natural'): ['language']\n",
+            "Predicting next word after ('machine', 'learning'): ['improves']\n",
+            "Predicting next word after ('deep', 'learning'): ['uses']\n",
+            "Predicting next word after ('to', 'understand'): ['human']\n",
+            "Predicting next word after ('nonexistent', 'context'): ['language']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def predict_next_word_bigram(current_word, top_n=1):\n",
+        "    if current_word not in bigram_counts or not bigram_counts[current_word]:\n",
+        "        print(f\"No bigram data for '{current_word}'. Returning random words.\")\n",
+        "        return random.choices(list(unigram_counts.keys()), k=top_n)\n",
+        "\n",
+        "    next_word_probabilities = {}\n",
+        "    total_possible_next_words = sum(bigram_counts[current_word].values()) + vocab_size\n",
+        "\n",
+        "    for next_word in bigram_counts[current_word]:\n",
+        "        next_word_probabilities[next_word] = bigram_prob(current_word, next_word)\n",
+        "\n",
+        "\n",
+        "    for word in unigram_counts.keys():\n",
+        "        if word not in next_word_probabilities and word != '':\n",
+        "            next_word_probabilities[word] = bigram_prob(current_word, word)\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "\n",
+        "# Example Usage:\n",
+        "print(\"Predicting next word after 'natural':\", predict_next_word_bigram('natural'))\n",
+        "print(\"Predicting next word after 'machine':\", predict_next_word_bigram('machine'))\n",
+        "print(\"Predicting next word after 'language':\", predict_next_word_bigram('language'))\n",
+        "print(\"Predicting next word after 'deep':\", predict_next_word_bigram('deep'))\n",
+        "print(\"Predicting next word after 'nonexistent_word':\", predict_next_word_bigram('nonexistent_word'))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XydxZTHNHONq",
+        "outputId": "d37ea53d-5525-4a54-cc65-1728f03f9b87"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Predicting next word after 'natural': ['language']\n",
+            "Predicting next word after 'machine': ['learning']\n",
+            "Predicting next word after 'language': ['processing']\n",
+            "Predicting next word after 'deep': ['learning']\n",
+            "No bigram data for 'nonexistent_word'. Returning random words.\n",
+            "Predicting next word after 'nonexistent_word': ['removes']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def generate_sentence_bigram(max_length=15, k=1):\n",
+        "    sentence = ['']\n",
+        "    current_word = ''\n",
+        "\n",
+        "    while current_word != '' and len(sentence) < max_length:\n",
+        "        next_word = predict_next_word_bigram(current_word, k=k)[0] # Get the top predicted word, passing k\n",
+        "        sentence.append(next_word)\n",
+        "        current_word = next_word\n",
+        "\n",
+        "    return \" \".join(sentence)\n",
+        "\n",
+        "print(\"Generated sentence (Bigram, k=1):\", generate_sentence_bigram(k=1))\n",
+        "print(\"Generated sentence (Bigram, k=0.5):\", generate_sentence_bigram(k=0.5))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ddRhd3tFHXaG",
+        "outputId": "ddb6efe4-89fe-47c6-f047-fbd6a9069ed4"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Generated sentence (Bigram, k=1): \n",
+            "Generated sentence (Bigram, k=0.5): \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def generate_sentence_trigram(max_length=15, k=1):\n",
+        "    sentence = ['', ''] # Start with two start tokens for trigram context\n",
+        "\n",
+        "    while sentence[-1] != '' and len(sentence) < max_length + 1:\n",
+        "        w1 = sentence[-2]\n",
+        "        w2 = sentence[-1]\n",
+        "\n",
+        "        next_word = predict_next_word_trigram(w1, w2, k=k)[0] # Get the top predicted word, passing k\n",
+        "        sentence.append(next_word)\n",
+        "\n",
+        "    return \" \".join(sentence[1:])\n",
+        "\n",
+        "print(\"Generated sentence (Trigram, k=1):\", generate_sentence_trigram(k=1))\n",
+        "print(\"Generated sentence (Trigram, k=0.5):\", generate_sentence_trigram(k=0.5))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EDFrzN1PHeg4",
+        "outputId": "82f5213a-5c49-4047-c454-a3d13da86697"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Generated sentence (Trigram, k=1): \n",
+            "Generated sentence (Trigram, k=0.5): \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Example for bigram probability\n",
+        "print(\"Bigram Probability ('natural', 'language'):\", bigram_prob('natural', 'language'))\n",
+        "print(\"Bigram Probability ('nonexistent_word', 'random_word'):\", bigram_prob('nonexistent_word', 'random_word'))\n",
+        "\n",
+        "# Example for trigram probability\n",
+        "print(\"Trigram Probability ('', 'natural', 'language'):\", trigram_prob('', 'natural', 'language'))\n",
+        "print(\"Trigram Probability ('nonexistent', 'context', 'word'):\", trigram_prob('nonexistent', 'context', 'word'))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-i5U3M4lHlWt",
+        "outputId": "3158219c-f0ab-4378-b149-dbc0ac167f0b"
+      },
+      "execution_count": 20,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Bigram Probability ('natural', 'language'): 0.06666666666666667\n",
+            "Bigram Probability ('nonexistent_word', 'random_word'): 0.016666666666666666\n",
+            "Trigram Probability ('', 'natural', 'language'): 0.06666666666666667\n",
+            "Trigram Probability ('nonexistent', 'context', 'word'): 0.016666666666666666\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def trigram_prob(w1, w2, w3):\n",
+        "    return (trigram_counts[w1][w2][w3] + 1) / (sum(trigram_counts[w1][w2].values()) + vocab_size)\n",
+        "print(\"Example trigram_prob('', 'natural', 'language'):\", trigram_prob('', 'natural', 'language'))\n",
+        "print(\"Example trigram_prob('nonexistent', 'context', 'word'):\", trigram_prob('nonexistent', 'context', 'word'))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fTqEmgguH37m",
+        "outputId": "34e59f23-16d1-471b-9628-6df74120b0ac"
+      },
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Example trigram_prob('', 'natural', 'language'): 0.06666666666666667\n",
+            "Example trigram_prob('nonexistent', 'context', 'word'): 0.034482758620689655\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def bigram_prob(w1, w2, k=1):\n",
+        "    # Add-k smoothing\n",
+        "    if w1 not in bigram_counts or sum(bigram_counts[w1].values()) == 0:\n",
+        "        # Fallback to unigram probability if bigram not seen or its count is zero\n",
+        "        return (unigram_counts.get(w2, 0) + k) / (total_words + vocab_size * k)\n",
+        "    else:\n",
+        "        return (bigram_counts[w1].get(w2, 0) + k) / (sum(bigram_counts[w1].values()) + vocab_size * k)\n",
+        "\n",
+        "def trigram_prob(w1, w2, w3, k=1):\n",
+        "    # Add-k smoothing\n",
+        "    if w1 not in trigram_counts or w2 not in trigram_counts[w1] or sum(trigram_counts[w1][w2].values()) == 0:\n",
+        "        # Fallback to bigram probability if trigram not seen or its count is zero\n",
+        "        return bigram_prob(w2, w3, k=k) # Pass k to bigram_prob\n",
+        "    else:\n",
+        "        return (trigram_counts[w1][w2].get(w3, 0) + k) / (sum(trigram_counts[w1][w2].values()) + vocab_size * k)\n",
+        "\n",
+        "def predict_next_word_bigram(w1, top_n=1, k=1):\n",
+        "    if w1 not in bigram_counts or not bigram_counts[w1]:\n",
+        "        print(f\"No bigram data for '{w1}'. Falling back to unigram prediction.\")\n",
+        "        # Fallback to unigram if no bigram data for w1\n",
+        "        next_word_probabilities = {word: (unigram_counts.get(word, 0) + k) / (total_words + vocab_size * k) for word in unigram_counts.keys() if word != ''}\n",
+        "    else:\n",
+        "        next_word_probabilities = {}\n",
+        "        for next_word in unigram_counts.keys():\n",
+        "            if next_word == '': continue\n",
+        "            next_word_probabilities[next_word] = bigram_prob(w1, next_word, k=k) # Pass k to bigram_prob\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "def predict_next_word_trigram(w1, w2, top_n=1, k=1):\n",
+        "    if w1 not in trigram_counts or w2 not in trigram_counts[w1] or not trigram_counts[w1][w2]:\n",
+        "        print(f\"No trigram data for '({w1}, {w2})'. Falling back to bigram prediction for '{w2}'.\")\n",
+        "        return predict_next_word_bigram(w2, top_n, k=k)\n",
+        "\n",
+        "    next_word_probabilities = {}\n",
+        "\n",
+        "    for next_word in unigram_counts.keys():\n",
+        "        if next_word == '' and (w1 != '' or w2 != ''):\n",
+        "            continue\n",
+        "        next_word_probabilities[next_word] = trigram_prob(w1, w2, next_word, k=k)\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "# Example Usage:\n",
+        "print(\"Predicting next word after ('', 'natural') (k=1):\", predict_next_word_trigram('', 'natural', k=1))\n",
+        "print(\"Predicting next word after ('machine', 'learning') (k=0.5):\", predict_next_word_trigram('machine', 'learning', k=0.5))\n",
+        "print(\"Predicting next word after ('nonexistent', 'context') (k=1):\", predict_next_word_trigram('nonexistent', 'context', k=1))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3UcaGYTtIA2O",
+        "outputId": "2200386c-2169-4d6a-c0de-7ed7e43c742c"
+      },
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Predicting next word after ('', 'natural') (k=1): ['language']\n",
+            "Predicting next word after ('machine', 'learning') (k=0.5): ['improves']\n",
+            "Predicting next word after ('nonexistent', 'context') (k=1): ['language']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_unigram(data):\n",
+        "    counts = Counter()\n",
+        "    for sentence in data:\n",
+        "        counts.update(sentence)\n",
+        "    return counts\n",
+        "\n",
+        "unigram_counts = build_unigram(train_data)\n",
+        "total_words = sum(unigram_counts.values())\n",
+        "vocab_size = len(unigram_counts)"
+      ],
+      "metadata": {
+        "id": "9XoTDOSMIl17"
+      },
+      "execution_count": 25,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "gggdE3U3IslH"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bigram Probability Function with Laplace Smoothing (Add-one smoothing)"
+      ],
+      "metadata": {
+        "id": "ryY6ElknIySm"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def bigram_prob(w1, w2, k=1):\n",
+        "    # Add-k smoothing\n",
+        "    if w1 not in bigram_counts or sum(bigram_counts[w1].values()) == 0:\n",
+        "        # Fallback to unigram probability if bigram not seen or its count is zero\n",
+        "        return (unigram_counts.get(w2, 0) + k) / (total_words + vocab_size * k)\n",
+        "    else:\n",
+        "        return (bigram_counts[w1].get(w2, 0) + k) / (sum(bigram_counts[w1].values()) + vocab_size * k)\n",
+        "\n",
+        "print(\"Example bigram_prob('natural', 'language'):\", bigram_prob('natural', 'language'))\n",
+        "print(\"Example bigram_prob('nonexistent_word', 'random_word'):\", bigram_prob('nonexistent_word', 'random_word'))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BeUxKEYRIz3I",
+        "outputId": "350e8412-022e-477c-a420-4d96e198acfb"
+      },
+      "execution_count": 28,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Example bigram_prob('natural', 'language'): 0.08333333333333333\n",
+            "Example bigram_prob('nonexistent_word', 'random_word'): 0.018867924528301886\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "feqyuqDOI8JE"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Next Word Prediction (Bigram Model) using Laplace Smoothing"
+      ],
+      "metadata": {
+        "id": "PIoAqPwPJCDe"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def predict_next_word_bigram(current_word, top_n=1, k=1):\n",
+        "    if current_word not in bigram_counts or not bigram_counts[current_word]:\n",
+        "        print(f\"No bigram data for '{current_word}'. Falling back to unigram prediction.\")\n",
+        "        return random.choices(list(unigram_counts.keys()), k=top_n)\n",
+        "\n",
+        "    next_word_probabilities = {}\n",
+        "\n",
+        "    for next_word in unigram_counts.keys():\n",
+        "        if next_word == '' and current_word != '':\n",
+        "            continue\n",
+        "        next_word_probabilities[next_word] = bigram_prob(current_word, next_word, k=k)\n",
+        "\n",
+        "    sorted_predictions = sorted(next_word_probabilities.items(), key=lambda item: item[1], reverse=True)\n",
+        "    predicted_words = [word for word, prob in sorted_predictions[:top_n]]\n",
+        "\n",
+        "    return predicted_words\n",
+        "\n",
+        "# Example Usage:\n",
+        "print(\"Predicting next word after 'natural' (k=1):\", predict_next_word_bigram('natural', k=1))\n",
+        "print(\"Predicting next word after 'machine' (k=0.5):\", predict_next_word_bigram('machine', k=0.5))\n",
+        "print(\"Predicting next word after 'nonexistent_word' (k=1):\", predict_next_word_bigram('nonexistent_word', k=1))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eBagPkgUJEMB",
+        "outputId": "a221a0c2-8695-4753-c65d-7ccf7679f180"
+      },
+      "execution_count": 29,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Predicting next word after 'natural' (k=1): ['language']\n",
+            "Predicting next word after 'machine' (k=0.5): ['learning']\n",
+            "Predicting next word after 'nonexistent_word' (k=1): ['language']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_bigram(data):\n",
+        "    counts = defaultdict(Counter)\n",
+        "    for sentence in data:\n",
+        "        for i in range(len(sentence)-1):\n",
+        "            counts[sentence[i]][sentence[i+1]] += 1\n",
+        "    return counts\n",
+        "\n",
+        "bigram_counts = build_bigram(train_data)"
+      ],
+      "metadata": {
+        "id": "Q-EIwWA7JQop"
+      },
+      "execution_count": 30,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_trigram(data):\n",
+        "    counts = defaultdict(lambda: defaultdict(Counter))\n",
+        "    for sentence in data:\n",
+        "        for i in range(len(sentence)-2):\n",
+        "            counts[sentence[i]][sentence[i+1]][sentence[i+2]] += 1\n",
+        "    return counts\n",
+        "\n",
+        "trigram_counts = build_trigram(train_data)"
+      ],
+      "metadata": {
+        "id": "LjcnOyomJYOx"
+      },
+      "execution_count": 31,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def unigram_prob(word, k=1):\n",
+        "    return (unigram_counts[word] + k) / (total_words + k * vocab_size)\n",
+        "\n",
+        "def bigram_prob(w1, w2, k=1):\n",
+        "    return (bigram_counts[w1][w2] + k) / (sum(bigram_counts[w1].values()) + k * vocab_size)\n",
+        "\n",
+        "def trigram_prob(w1, w2, w3, k=1):\n",
+        "    return (trigram_counts[w1][w2][w3] + k) / (sum(trigram_counts[w1][w2].values()) + k * vocab_size)"
+      ],
+      "metadata": {
+        "id": "Kz0z8DI9Jiuw"
+      },
+      "execution_count": 32,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def sentence_probability(sentence, model):\n",
+        "    prob = 1\n",
+        "\n",
+        "    if model == \"unigram\":\n",
+        "        for w in sentence:\n",
+        "            prob *= unigram_prob(w)\n",
+        "\n",
+        "    elif model == \"bigram\":\n",
+        "        for i in range(len(sentence)-1):\n",
+        "            prob *= bigram_prob(sentence[i], sentence[i+1])\n",
+        "\n",
+        "    elif model == \"trigram\":\n",
+        "        for i in range(len(sentence)-2):\n",
+        "            prob *= trigram_prob(sentence[i], sentence[i+1], sentence[i+2])\n",
+        "\n",
+        "    return prob\n",
+        "\n",
+        "# Test on test sentence\n",
+        "for s in test_data:\n",
+        "    print(\"Sentence:\", \" \".join(s))\n",
+        "    print(\"Unigram:\", sentence_probability(s, \"unigram\"))\n",
+        "    print(\"Bigram:\", sentence_probability(s, \"bigram\"))\n",
+        "    print(\"Trigram:\", sentence_probability(s, \"trigram\"))"
+      ],
+      "metadata": {
+        "id": "ER-XbY9aJqHG",
+        "outputId": "c713f6c9-084c-4bb4-9ebb-bec976b73809",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Sentence:  text preprocessing removes noise from raw data \n",
+            "Unigram: 1.484954865304127e-14\n",
+            "Bigram: 1.1296185093842919e-11\n",
+            "Trigram: 2.9370081243991585e-10\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def perplexity(data, model):\n",
+        "    N = 0\n",
+        "    log_prob = 0\n",
+        "\n",
+        "    for sentence in data:\n",
+        "        N += len(sentence)\n",
+        "\n",
+        "        if model == \"unigram\":\n",
+        "            for w in sentence:\n",
+        "                log_prob += np.log(unigram_prob(w))\n",
+        "\n",
+        "        elif model == \"bigram\":\n",
+        "            for i in range(len(sentence)-1):\n",
+        "                log_prob += np.log(bigram_prob(sentence[i], sentence[i+1]))\n",
+        "\n",
+        "        elif model == \"trigram\":\n",
+        "            for i in range(len(sentence)-2):\n",
+        "                log_prob += np.log(trigram_prob(sentence[i], sentence[i+1], sentence[i+2]))\n",
+        "\n",
+        "    return np.exp(-log_prob / N)\n",
+        "\n",
+        "print(\"Unigram Perplexity:\", perplexity(test_data, \"unigram\"))\n",
+        "print(\"Bigram Perplexity:\", perplexity(test_data, \"bigram\"))\n",
+        "print(\"Trigram Perplexity:\", perplexity(test_data, \"trigram\"))"
+      ],
+      "metadata": {
+        "id": "cm4Vi8gCJ1Hg",
+        "outputId": "3416bca6-96ba-48ab-eeba-becbe28eadd5",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Unigram Perplexity: 34.39349459840676\n",
+            "Bigram Perplexity: 16.456630237318272\n",
+            "Trigram Perplexity: 11.458338560417927\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Welcome To Colab",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
